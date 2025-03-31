@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import ChatMessage from "./ChatMessage";
 import "../VideoPlayer.css";
+// Список смайликов
+const emojis = ["😀", "😂", "😍", "😎", "👍", "❤️", "🔥", "🎉", "🤔", "👏"];
 
 const VideoPlayer = () => {
   const { id } = useParams();
@@ -10,7 +12,39 @@ const VideoPlayer = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const chatEndRef = useRef(null);
-
+  const [showEmojis, setShowEmojis] = useState(false);
+  const textareaRef = useRef(null);
+  const authorResponses = [
+    "Спасибо за ваш комментарий!",
+    "Интересное замечание!",
+    "Я учту это в следующих видео",
+    "Спасибо за просмотр!",
+    "Вы правы, это действительно важно",
+    "Отличное наблюдение!",
+    "Приятно слышать ваше мнение",
+    "Спасибо за обратную связь!",
+    "Рад, что вам понравилось!",
+    "Буду рад новым предложениям"
+  ];
+  const insertEmoji = (emoji) => {
+    const textarea = textareaRef.current;
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const currentText = newMessage;
+    
+    setNewMessage(
+      currentText.substring(0, startPos) + 
+      emoji + 
+      currentText.substring(endPos)
+    );
+    
+    // Фокусируем обратно на textarea и устанавливаем позицию курсора
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = startPos + emoji.length;
+      textarea.selectionEnd = startPos + emoji.length;
+    }, 0);
+  };
   useEffect(() => {
     const fetchVideo = async () => {
       try {
@@ -56,15 +90,29 @@ const VideoPlayer = () => {
 
     setMessages([...messages, message]);
     setNewMessage("");
-
+    // Сброс высоты textarea после отправки
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
     // Имитация ответа
     setTimeout(() => {
+      const randomResponse = authorResponses[Math.floor(Math.random() * authorResponses.length)];
       setMessages((prev) => [
         ...prev,
-        { author: "Женя", text: "Спасибо за сообщение!" },
+        { author: "Сергей", text: randomResponse },
       ]);
     }, 1000);
   };
+
+  const handleTextareaChange = (e) => {
+    setNewMessage(e.target.value);
+    // Автоматическое увеличение высоты textarea
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+    }
+  };
+
 
   if (!video) {
     return <div className="loading">Loading...</div>;
@@ -92,15 +140,44 @@ const VideoPlayer = () => {
           <div ref={chatEndRef} />
         </div>
         <form onSubmit={handleSendMessage} className="chat-input-form">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Напишите сообщение..."
-            className="chat-input"
-          />
+          <div className="textarea-container">
+            <textarea
+              ref={textareaRef}
+              value={newMessage}
+              onChange={handleTextareaChange}
+              placeholder="Напишите сообщение..."
+              className="chat-textarea"
+              rows={1}
+            />
+            <button 
+              type="button" 
+              className="emoji-button"
+              onClick={() => setShowEmojis(!showEmojis)}
+            >
+              🙂
+            </button>
+            
+            {showEmojis && (
+              <div className="emoji-picker">
+                {emojis.map((emoji, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="emoji-option"
+                    onClick={() => {
+                      insertEmoji(emoji);
+                      setShowEmojis(false);
+                    }}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          
           <button type="submit" className="send-button">
-            Отправить
+            Отправить сообщение
           </button>
         </form>
       </div>

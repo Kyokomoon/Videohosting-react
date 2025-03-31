@@ -185,20 +185,32 @@ body {
 }
 
 .header-btn {
-  padding: 0.5rem 1rem;
-  background-color: #61dafb;
-  color: #20232a;
+  padding: 0.5rem 0;
+  background-color: transparent;
+  color: white;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  position: relative;
+  transition: opacity 0.3s ease;
 }
 
 .header-btn:hover {
-  background-color: #4fa8d3;
+  opacity: 0.8;
 }
 
+.header-btn.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  background-color: white;
+  transform: scaleX(1);
+  transition: transform 0.3s ease;
+}
 .logo svg {
   height: 40px;
   width: auto;
@@ -235,4 +247,78 @@ body {
 
 .register-btn:hover {
   background-color: rgba(97, 218, 251, 0.1);
+}
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Стили для формы ввода */
+.chat-input-form {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border-top: 1px solid #333;
+  gap: 10px;
+}
+
+.chat-textarea {
+  width: 95%;
+  min-height: 40px;
+  max-height: 150px;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: black;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: height 0.2s ease;
+}
+
+.chat-textarea:focus {
+  background-color: #ffffff;
+}
+
+.send-button {
+  width: 100%;
+  background-color: #ff5500;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 500;
+}
+
+.send-button:hover {
+  background-color: #e04b00;
+}
+
+.send-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
 }

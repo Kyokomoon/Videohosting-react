@@ -5,6 +5,7 @@ import {
   Routes,
   Navigate,
   useNavigate,
+  useLocation
 } from "react-router-dom";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
@@ -87,9 +88,9 @@ const App = () => {
             {isAuthenticated ? (
               <>
                 <span className="username">User</span>
-                <span className="logout-icon" onClick={handleLogout}>
-                  Logout
-                </span>
+                <button className="icon-btn" onClick={handleLogout} aria-label="Logout">
+                  <img src="/logout.png" alt="Logout" className="icon-img" />
+                </button>
               </>
             ) : (
               <NavigateButton />
@@ -122,16 +123,24 @@ const App = () => {
 const NavigateButton = () => {
   const navigate = useNavigate();
   return (
-    <button className="register-btn" onClick={() => navigate("/register")}>
-      Register
+    <button className="icon-btn" onClick={() => navigate("/login")}>
+      <img src="/login.png" alt="Login" className="icon-img" />
     </button>
   );
 };
 
 const HeaderButton = ({ path, text }) => {
   const navigate = useNavigate();
+  const location = useLocation(); // Добавляем хук для определения текущего пути
+  
+  // Проверяем, совпадает ли путь кнопки с текущим путем
+  const isActive = location.pathname === path;
+  
   return (
-    <button className="header-btn" onClick={() => navigate(path)}>
+    <button 
+      className={`header-btn ${isActive ? 'active' : ''}`} 
+      onClick={() => navigate(path)}
+    >
       {text}
     </button>
   );
